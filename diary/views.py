@@ -1,9 +1,4 @@
-from django.shortcuts import (
-    get_object_or_404, 
-    redirect,
-    render, 
-    render_to_response,
-)
+from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.utils import timezone
