@@ -9,10 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.forms import ValidationError
 from django.template.loader import render_to_string
-from django.template import RequestContext
-
-
-# Create your views here.
+# from django.template import RequestContext
 
 from .models import Entry, Customer
 from .forms import EntryForm
@@ -151,28 +148,28 @@ def year(request, year=None):
     for yr in [year - 1, year, year + 1]:
         months = []
         for n, month in enumerate(MONTH_NAMES):
-            entries = Entry.objects.filter(date__year=yr, date__month=n+1)
+            entries = Entry.objects.filter(date__year=yr, date__month=n + 1)
             entry = (True if entries 
                 else False)
-            current = (True if (yr == now.year) and (n == now.month-1)
+            current = (True if (yr == now.year) and (n == now.month - 1)
                 else False)
             months.append({
-                'n': n+1,
-                'name': month, 
-                'entry': entry, 
+                'n': n + 1,
+                'name': month,
+                'entry': entry,
                 'current': current,
                 })
         years.append((yr, months))
 
     return render_to_response(
-        'diary/year.html', 
+        'diary/year.html',
         {
             'years': years,
             'user': request.user,
             'prev_year': year - 3,
             'next_year': year + 3,
             'reminders': reminders(request),
-        }, 
+        },
         # context_instance=RequestContext(request),
     )
 
@@ -194,7 +191,7 @@ def month(request, year=None, month=None, change=None):
     # handle month change, with year rollover
     if change:
         monthDelta = datetime.timedelta(days=31)
-        if change == 'prev': 
+        if change == 'prev':
             monthDelta = datetime.timedelta(days=-31)
         date = date + monthDelta
 
@@ -213,7 +210,7 @@ def month(request, year=None, month=None, change=None):
             entries = (
                 Entry.objects.filter(date=dayDate) if request.user.is_staff
                 else Entry.objects.filter(
-                    date=dayDate, 
+                    date=dayDate,
                     customer=request.user,
                     cancelled=False,
                 )
@@ -235,10 +232,10 @@ def month(request, year=None, month=None, change=None):
         {
             'date': date,
             'weeks': weeks,
-            'month_name': MONTH_NAMES[date.month-1],
+            'month_name': MONTH_NAMES[date.month - 1],
             'day_names': DAY_NAMES,
             'reminders': reminders(request),
-        }, 
+        },
         # context_instance=RequestContext(request),
     )
 
@@ -299,7 +296,7 @@ def getDatetimeFromSlug(slug):
 
 def evaluateBusinessLogic(day, startTime, endTime):
     """
-    Evaluate the booleans that control the display business logic for day and 
+    Evaluate the booleans that control the display business logic for day and
     multi-day views.
     """
     today, now = get_today_now()
@@ -307,11 +304,11 @@ def evaluateBusinessLogic(day, startTime, endTime):
     trading = (
         startTime >= settings.DIARY_OPENING_TIMES[day.weekday()] and
         endTime <= settings.DIARY_CLOSING_TIMES[day.weekday()]
-    ) # trading time
+    )  # trading time
     historic = (
         day < today or (day == today and endTime < now)
-    ) # historic data
-    booking_allowed_date = (today + 
+    )  # historic data
+    booking_allowed_date = (today +
         datetime.timedelta(days=settings.DIARY_MIN_BOOKING)
     )
     before_advance = day < booking_allowed_date
@@ -331,7 +328,7 @@ def multi_day(request, slug=None, change=None):
     date_slots = []
     dayDelta = datetime.timedelta(days=1)
     for i in range(0, settings.DIARY_MULTI_DAY_NUMBER):
-        day = date + i*dayDelta
+        day = date + i * dayDelta
         dayHeader = day.strftime('%a %d')
         date_slug = day.strftime(DATE_SLUG_FORMAT)
         date_slots.append((
@@ -354,14 +351,14 @@ def multi_day(request, slug=None, change=None):
         for day, dayHeader, date_slug in date_slots:
             entries = (
                 Entry.objects.filter(
-                    date=day, 
-                    time__gte=startTime, 
-                    time__lt=endTime, 
+                    date=day,
+                    time__gte=startTime,
+                    time__lt=endTime,
                 ) if request.user.is_staff
                 else Entry.objects.filter(
                     date=day,
-                    time__gte=startTime, 
-                    time__lt=endTime, 
+                    time__gte=startTime,
+                    time__lt=endTime,
                     customer=request.user,
                     cancelled=False,
                 )
@@ -372,22 +369,22 @@ def multi_day(request, slug=None, change=None):
                 evaluateBusinessLogic(day, startTime, endTime)
 
             day_entries.append((
-                '_'.join((date_slug, time_slug)), # date-time slug
-                entries, # the entries
-                current, # now
-                trading_time, # trading time
-                historic, # historic data
-                before_advance, # before advance booking threshold
-                allow_dnd, # allow drag-n-drop
+                '_'.join((date_slug, time_slug)),  # date-time slug
+                entries,  # the entries
+                current,  # now
+                trading_time,  # trading time
+                historic,  # historic data
+                before_advance,  # before advance booking threshold
+                allow_dnd,  # allow drag-n-drop
             ))
         time_slots.append((
-            timeLabel, 
+            timeLabel,
             startTime,
             day_entries,
         ))
 
     return render_to_response(
-        'diary/multi_day.html', 
+        'diary/multi_day.html',
         {
             'date': date,
             'n_cols': settings.DIARY_MULTI_DAY_NUMBER,
@@ -395,7 +392,7 @@ def multi_day(request, slug=None, change=None):
             'date_end_head': date_end_head,
             'nav_slug': nav_slug,
             'user': request.user,
-            'month_name': MONTH_NAMES[date.month-1],
+            'month_name': MONTH_NAMES[date.month - 1],
             'time_slots': time_slots,
             'date_slots': date_slots,
             'reminders': reminders(request),
