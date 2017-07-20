@@ -181,7 +181,7 @@ def year(request, year=None):
             'next_year': year + 3,
             'reminders': reminders(request),
         }, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 
 
@@ -247,7 +247,7 @@ def month(request, year=None, month=None, change=None):
             'day_names': DAY_NAMES,
             'reminders': reminders(request),
         }, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 
 
@@ -408,7 +408,7 @@ def multi_day(request, slug=None, change=None):
             'date_slots': date_slots,
             'reminders': reminders(request),
         }, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 
 
@@ -465,7 +465,7 @@ def day(request, slug=None, change=None):
             'time_slots': time_slots,
             'reminders': reminders(request),
         }, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 
 
@@ -579,7 +579,7 @@ def entry(request, pk=None, slug=None, customer_pk=None):
     return render_to_response(
         'diary/entry.html', 
         context, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 
 
@@ -773,7 +773,7 @@ def customer_add(request, entry_pk=None, entry_slug=None):
     return render_to_response(
         'diary/customer_add.html', 
         context, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 
 
@@ -818,7 +818,7 @@ def customer_change(request, pk):
     return render_to_response(
         'diary/customer_change.html', 
         context, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 
 
@@ -852,6 +852,6 @@ def history(request, pk):
     return render_to_response(
         'diary/history.html', 
         context, 
-        context_instance=RequestContext(request),
+        # context_instance=RequestContext(request),
     )
 

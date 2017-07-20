@@ -2,6 +2,8 @@ from django.conf.urls import url
 from . import views
 
 
+app_name = 'diary'  # django 1.9 no longer uses namespace keyword arg and uses module app_name attribute instead
+
 urlpatterns = [
 
     # year and month views
