@@ -27,7 +27,7 @@ calendar.setfirstweekday(settings.DIARY_FIRST_DAY_OF_WEEK)
 
 MONTH_NAMES = calendar.month_name[1:]
 DAY_NAMES = (
-    calendar.day_name[calendar.firstweekday():] + 
+    calendar.day_name[calendar.firstweekday():] +
     calendar.day_name[:calendar.firstweekday()]
 )
 
@@ -44,19 +44,13 @@ TIME_FORMAT = '%I:%M' if settings.DIARY_SHOW_MERIDIAN else '%H:%M'
 ENTRY_DATE_FORMAT = '%a %d %b %Y'
 
 
-
 class Statistics(object):
-    """
-    Wrapper class for Entry statistics.
-    """
-
-
+    """Wrapper class for Entry statistics."""
     def __init__(self, total, cancelled, no_show):
         self.total = total
         self.cancelled = cancelled
         self.no_show = no_show
         self.bookings = total - cancelled - no_show
-
 
     def __str__(self):
         return (
@@ -65,7 +59,6 @@ class Statistics(object):
             'No-Shows: {2}<br />'
             'Total: {3}'
         ).format(self.bookings, self.cancelled, self.no_show, self.total)
-
 
 
 def get_statistics(entries):
@@ -77,12 +70,13 @@ def get_statistics(entries):
     if total:
         cancelled = no_show = 0
         for entry in entries:
-            if entry.cancelled: cancelled += 1
-            if entry.no_show: no_show += 1
+            if entry.cancelled:
+                cancelled += 1
+            if entry.no_show:
+                no_show += 1
         return Statistics(total, cancelled, no_show)
-    else: 
+    else:
         return None
-
 
 
 def evaluateTimeSlots():
@@ -99,7 +93,7 @@ def evaluateTimeSlots():
         thisTime = time.time()
         time += settings.DIARY_TIME_INC
         timeSlots.append((
-            thisTime.strftime(TIME_FORMAT), 
+            thisTime.strftime(TIME_FORMAT),
             thisTime.strftime(TIME_SLUG_FORMAT),
             thisTime,
             time.time(),
@@ -119,7 +113,6 @@ def get_today_now():
     return today, now
 
 
-
 def reminders(request):
     """
     Data for the reminder sidebar.
@@ -131,16 +124,15 @@ def reminders(request):
     user = request.user
     queryset = (                            # customers see their own entries
         Entry.objects.filter(
-            Q(date=today, time__gte=now)|Q(date=tomorrow), 
-            customer=user, 
+            Q(date=today, time__gte=now) | Q(date=tomorrow),
+            customer=user,
             cancelled=False,
         ) if isinstance(user, Customer)
         else Entry.objects.filter(          # admin/staff users see everything
-            Q(date=today, time__gte=now)|Q(date=tomorrow), 
+            Q(date=today, time__gte=now) | Q(date=tomorrow),
         )
     )
     return queryset.order_by('date', 'time')
-
 
 
 @login_required
@@ -156,7 +148,7 @@ def year(request, year=None):
         year = now.year
 
     years = []
-    for yr in [year-1, year, year+1,]:
+    for yr in [year - 1, year, year + 1]:
         months = []
         for n, month in enumerate(MONTH_NAMES):
             entries = Entry.objects.filter(date__year=yr, date__month=n+1)
