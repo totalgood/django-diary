@@ -502,8 +502,8 @@ def entry(request, pk=None, slug=None, customer_pk=None):
     entry = None
 
     # determine the navigation context for redirection
-    next_url = get_redirect_url(request, reverse('diary:home'))
-    #print('Entry: next_url is {0}'.format(next_url))
+    # next_url = get_redirect_url(request, reverse('diary:home'))
+    # print('Entry: next_url is {0}'.format(next_url))
 
     # decide whether we are creating a new entry or editing a new one
     if pk:                              # edit existing entry
